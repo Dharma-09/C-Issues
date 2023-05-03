@@ -208,23 +208,18 @@ uint256 d = a << 3;
 - [EVM Opcodes](https://www.evm.codes/)
 
 
-## G009 - Make Function `external` instead of `public`
+## G009 - Splitting require() statements that use && saves gas
 
 ### Description
 
-⚡️ Only valid for solidity versions `<0.6.9` ⚡️
+Instead of using operator && on a single require. Using a two require can save more gas.
 
-The restriction that `public` functions can not take `calldata` arguments was
-lifted in version `0.6.9`.
+i.e. for require(version == 1 && _bytecodeHash[1] == bytes1(0), "zf"); use:
 
-For solidity versions `<0.6.9`, `public` functions had to copy the arguments
-to memory.
-
-### Background Information
-
-- [StackOverflow answer re `solc >=0.6.9`](https://ethereum.stackexchange.com/questions/107578/does-using-external-over-public-in-a-library-reduce-any-gas-costs/107939#107939)
-- [Gustavo (Gus) Guimaraes post](https://gus-tavo-guim.medium.com/public-vs-external-functions-in-solidity-b46bcf0ba3ac)
-- [StackOverflow answer](https://ethereum.stackexchange.com/questions/19380/external-vs-public-best-practices?answertab=active#tab-top)
+  require(version == 1);
+  require(_bytecodeHash[1] == bytes1(0));
+Proof Of Concept
+56: require(recoveredAddress != address(0) && recoveredAddress == owner, "INVALID_SIGNER");
 
 
 ## G010 - Make Function `payable`
